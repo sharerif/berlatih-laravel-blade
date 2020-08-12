@@ -3,65 +3,126 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DB;
+use App\Pertanyaan;
 
 class PertanyaanController extends Controller
 {
-    public function create() {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        // $pertanyaan = DB::table('pertanyaan')->get();
+
+        $pertanyaan = Pertanyaan::all();
+
+        return view('items.index', compact('pertanyaan'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
         return view('items.create');
     }
 
-    public function store(Request $request) {
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
         //dd($request->all());
 
-        $request->validate([
-            'judul' => 'required|unique:pertanyaan',
-            'isi' => 'required'
-        ]);
+        // $request->validate([
+        //     'judul' => 'required',
+        //     'isi' => 'required'
+        // ]);
 
-        $query = DB::table('pertanyaan')->insert([
-            'judul' => $request['judul'],
-            'isi' => $request['isi']
-        ]);
+        $pertanyaan = new Pertanyaan;
+        $pertanyaan->judul = $request['judul'];
+        $pertanyaan->isi = $request['isi'];
+        $pertanyaan->save();
 
         return redirect('/pertanyaan')->with('success', 'Pertanyaan Berhasil Ditambahkan!');
     }
 
-    public function index(){
-        $pertanyaan = DB::table('pertanyaan')->get();
-        return view('items.index', compact('pertanyaan'));
-    }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($pertanyaan_id)
+    {
+        // $pertanyaan = DB::table('pertanyaan')->where('id', $pertanyaan_id)->first();
 
-    public function show($pertanyaan_id){
-        $pertanyaan = DB::table('pertanyaan')->where('id', $pertanyaan_id)->first();
+        $pertanyaan = Pertanyaan::find($pertanyaan_id);
+
         return view('items.show', compact('pertanyaan'));
     }
 
-    public function edit($pertanyaan_id){
-        $pertanyaan = DB::table('pertanyaan')->where('id', $pertanyaan_id)->first();
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($pertanyaan_id)
+    {
+        // $pertanyaan = DB::table('pertanyaan')->where('id', $pertanyaan_id)->first();
 
+        $pertanyaan = Pertanyaan::find($pertanyaan_id); 
         return view('items.edit', compact('pertanyaan'));
     }
 
-    public function update($pertanyaan_id, Request $request) {
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $pertanyaan_id)
+    {
         $request->validate([
-            'judul' => 'required|unique:pertanyaan',
+            'judul' => 'required',
             'isi' => 'required'
         ]);
 
-        $query = DB::table('pertanyaan')
-                    ->where('id', $pertanyaan_id)
-                    ->update([
-                        'judul' => $request['judul'],
-                        'isi' => $request['isi']
-                    ]);
+        // $query = DB::table('pertanyaan')
+        //             ->where('id', $pertanyaan_id)
+        //             ->update([
+        //                 'judul' => $request['judul'],
+        //                 'isi' => $request['isi']
+        //             ]);
+
+        $update = Pertanyaan::where('id', $pertanyaan_id)->update([
+            'judul' => $request['judul'],
+            'isi' => $request['isi']
+        ]);
 
         return redirect('/pertanyaan')->with('success', 'Update Berhasil');
     }
 
-    public function destroy($pertanyaan_id){
-        $query = DB::table('pertanyaan')->where('id', $pertanyaan_id)->delete();
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($pertanyaan_id)
+    {
+        // $query = DB::table('pertanyaan')->where('id', $pertanyaan_id)->delete();
 
+        Pertanyaan::destroy($pertanyaan_id);
         return redirect('/pertanyaan')->with('success', 'Delete Berhasil');
     }
 }
