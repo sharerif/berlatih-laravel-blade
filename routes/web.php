@@ -30,3 +30,6 @@ Route::get('/data-tables', function () {
 // Route::delete('/pertanyaan/{pertanyaan_id}', 'PertanyaanController@destroy'); // menghapus pertanyaan dengan id tertentu
 
 Route::resource('pertanyaan', 'PertanyaanController');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
